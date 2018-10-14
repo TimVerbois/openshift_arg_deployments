@@ -2,6 +2,7 @@
 
 #WAR_FILE_URL="http://192.168.99.1:8080/$APPLICATION_NAME.war
 WAR_FILE_URL="https://github.com/TimVerbois/openshift_wars.git"
+LOCAL_SOURCE_DIR=/tmp/src
 
 # Download and place binary in JBoss. WAR_FILE_URL variable is specified as
 # an environment variable in the BuildConfig
