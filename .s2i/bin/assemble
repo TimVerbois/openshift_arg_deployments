@@ -15,7 +15,6 @@ else
     pwd
     ls -ld wars/helloworld/helloworld.war
     mv wars/helloworld/helloworld.war $JBOSS_HOME/standalone/deployments/ROOT.war
-    find . 
 #  echo "Executing curl -u $WAR_FILE_USER:$WAR_FILE_PASSWORD -o $JBOSS_HOME/standalone/deployments/ROOT.war -O $WAR_FILE_URL"
 #  curl -u $WAR_FILE_USER:$WAR_FILE_PASSWORD -o $JBOSS_HOME/standalone/deployments/ROOT.war -O $WAR_FILE_URL
 fi
