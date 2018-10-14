@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module xmlns="urn:jboss:module:1.1" name="sonic.mq.client">
+    <resources>
+        <resource-root path="sonic_ASPI-8.6.0.jar"/>
+        <resource-root path="sonic_Channel-8.6.0.jar"/>
+        <resource-root path="sonic_Client-8.6.0.jar"/>
+        <resource-root path="sonic_Client_ext-8.6.0.jar"/>
+        <resource-root path="sonic_Crypto-8.6.0.jar"/>
+        <resource-root path="sonic_SF-8.6.0.jar"/>
+        <resource-root path="sonic_SSL-8.6.0.jar"/>
+        <resource-root path="sonic_Selector-8.6.0.jar"/>
+        <resource-root path="sonic_XA-8.6.0.jar"/>
+        <resource-root path="sonic_XMessage-8.6.0.jar"/>
+    </resources>
+    
+    <dependencies>
+        <module name="javax.api" export="true"/>
+        <module name="javax.jms.api" export="true"/>
+        <module name="javax.activation.api"/>
+        <module name="javax.mail.api"/>
+		<module name="javax.resource.api"/>
+    </dependencies>
+</module>

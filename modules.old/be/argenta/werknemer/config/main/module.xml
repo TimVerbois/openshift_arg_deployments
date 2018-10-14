@@ -1,0 +1,5 @@
+<module xmlns="urn:jboss:module:1.1" name="be.argenta.werknemer.config">
+	<resources>
+		<resource-root path="." />
+	</resources>
+</module>
