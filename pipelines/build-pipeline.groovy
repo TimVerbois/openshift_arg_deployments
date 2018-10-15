@@ -10,7 +10,7 @@ pipeline {
   options {
     timeout(time: 20, unit: 'MINUTES') 
   }
-/*  stages {
+  stages {
     stage('preamble') {
         steps {
             script {
@@ -90,5 +90,5 @@ pipeline {
         }
       }
     }*/
-//  }
+  }
 }
