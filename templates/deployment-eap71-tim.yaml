@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: eap71-openshift-tim
+  labels:
+    app: jboss
+    service: eap71-openshift-tim
+  namespace: jbosstest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jboss
+      service: eap71-openshift-tim
+  template:
+    metadata:
+      labels:
+        app: jboss
+    spec:
+      containers:
+      - name: eap71-openshift-tim
+        image: sv-arg-reg-i1.argenta.be:5000/jbosstest/eap71-openshift:latest
+        imagePullPolicy: Always
+        env:
+        - name: TST_ORACLE_SERVICE_HOST
+          value: "ARG_TST"
+        - name: TST_ORACLE_SERVICE_PORT
+          value: "5432"
+        - name: TEST_JNDI
+          value: "java:jboss/datasources/test-oracle"
+        - name: TST_USERNAME
+          value: "admin"
+        - name: TST_PASSWORD
+          value: "password"
+        - name: TST_DATABASE
+          value: "ARG_TST"
+        - name: TST_TX_ISOLATION
+          value: "TRANSACTION_READ_UNCOMMITTED"
+        - name: TST_TX_MIN_POOL_SIZE
+          value: "1"
+        - name: TST_TX_MAX_POOL_SIZE
+          value: "20"
+        - name: HTTPS_NAME
+          value: "tst.argenta.be"
+        - name: HTTPS_PASSWORD
+          value: "password"
+        - name: HTTPS_KEYSTORE
+          value: "keystore.jks"
+        - name: HTTPS_KEYSTORE_DIR
+          value: "/opt/eap/standalone/"
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 8443
+          name: https
+          protocol: TCP

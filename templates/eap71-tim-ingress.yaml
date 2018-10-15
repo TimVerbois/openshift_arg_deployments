@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: eap71-openshift-tim
+  namespace: jbosstest
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: eap71-openshift-tim
+          servicePort: 8080
+        path: /
