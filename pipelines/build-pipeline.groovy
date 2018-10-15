@@ -42,7 +42,7 @@ pipeline {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
-                  openshift.create(templatePath) 
+                  openshift.create("-f " + templatePath) 
                 }
             }
         }
