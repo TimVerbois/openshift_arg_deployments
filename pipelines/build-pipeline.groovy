@@ -1,6 +1,6 @@
 //def templatePath = 'https://raw.githubusercontent.com/openshift/nodejs-ex/master/openshift/templates/nodejs-mongodb.json' 
 //def applicationName = 'nodejs-mongodb-example' 
-//def applicationName = env[APPLICATION_NAME]
+def applicationName = "helloworld"
 pipeline {
   agent {
     node {
