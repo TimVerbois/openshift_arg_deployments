@@ -1,6 +1,6 @@
 //def templatePath = 'https://raw.githubusercontent.com/openshift/nodejs-ex/master/openshift/templates/nodejs-mongodb.json' 
 //def applicationName = 'nodejs-mongodb-example' 
-def applicationName = env[APPLICATION_NAME]
+//def applicationName = env[APPLICATION_NAME]
 pipeline {
   agent {
     node {
@@ -10,7 +10,7 @@ pipeline {
   options {
     timeout(time: 20, unit: 'MINUTES') 
   }
-  stages {
+/*  stages {
     stage('preamble') {
         steps {
             script {
@@ -21,7 +21,7 @@ pipeline {
                 }
             }
         }
-    }
+    }*/
 /*    stage('cleanup') {
       steps {
         script {
