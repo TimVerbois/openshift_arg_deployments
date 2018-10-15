@@ -1,9 +1,10 @@
-def templatePath = 'https://raw.githubusercontent.com/openshift/nodejs-ex/master/openshift/templates/nodejs-mongodb.json' 
-def templateName = 'nodejs-mongodb-example' 
+//def templatePath = 'https://raw.githubusercontent.com/openshift/nodejs-ex/master/openshift/templates/nodejs-mongodb.json' 
+//def applicationName = 'nodejs-mongodb-example' 
+def applicationName = env[APPLICATION_NAME]
 pipeline {
   agent {
     node {
-      label 'nodejs' 
+      label 'jboss-deployment' 
     }
   }
   options {
@@ -21,21 +22,21 @@ pipeline {
             }
         }
     }
-    stage('cleanup') {
+/*    stage('cleanup') {
       steps {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
-                  openshift.selector("all", [ template : templateName ]).delete() 
-                  if (openshift.selector("secrets", templateName).exists()) { 
-                    openshift.selector("secrets", templateName).delete()
+                  openshift.selector("all", [ template : applicationName ]).delete() 
+                  if (openshift.selector("secrets", applicationName).exists()) { 
+                    openshift.selector("secrets", applicationName).delete()
                   }
                 }
             }
         }
       }
-    }
-    stage('create') {
+    }*/
+/*    stage('create') {
       steps {
         script {
             openshift.withCluster() {
@@ -45,13 +46,13 @@ pipeline {
             }
         }
       }
-    }
+    }*/
     stage('build') {
       steps {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
-                  def builds = openshift.selector("bc", templateName).related('builds')
+                  def builds = openshift.selector("bc", applicationName).related('builds')
                   timeout(5) { 
                     builds.untilEach(1) {
                       return (it.object().status.phase == "Complete")
@@ -67,9 +68,9 @@ pipeline {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
-                  def rm = openshift.selector("dc", templateName).rollout()
+                  def rm = openshift.selector("dc", applicationName).rollout()
                   timeout(5) { 
-                    openshift.selector("dc", templateName).related('pods').untilEach(1) {
+                    openshift.selector("dc", applicationName).related('pods').untilEach(1) {
                       return (it.object().status.phase == "Running")
                     }
                   }
@@ -83,7 +84,7 @@ pipeline {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
-                  openshift.tag("${templateName}:latest", "${templateName}-staging:latest") 
+                  openshift.tag("${applicationName}:latest", "${applicationName}-staging:latest") 
                 }
             }
         }
