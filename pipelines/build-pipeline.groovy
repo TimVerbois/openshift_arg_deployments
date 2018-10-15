@@ -54,7 +54,8 @@ pipeline {
                 openshift.withProject() {
                   def builds = openshift.selector("bc", applicationName).related('builds')
                   builds.each {
-                    it.startBuild()
+//                    it.startBuild()
+                    echo message: bla
                   }
 /*                  timeout(5) {
                     builds.untilEach(1) {
