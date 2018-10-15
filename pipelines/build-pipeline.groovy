@@ -56,12 +56,12 @@ pipeline {
                   builds.dump()
 /*                  builds.each {
                     it.startBuild()
-                  }*/
+                  }
                   timeout(5) { 
                     builds.untilEach(1) {
                       return (it.object().status.phase == "Complete")
                     }
-                  }
+                  }*/
                 }
             }
         }
