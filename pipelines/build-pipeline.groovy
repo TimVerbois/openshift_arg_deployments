@@ -21,7 +21,7 @@ pipeline {
                 }
             }
         }
-    }*/
+    }
 /*    stage('cleanup') {
       steps {
         script {
