@@ -23,20 +23,17 @@ pipeline {
             }
         }
     }
-/*    stage('cleanup') {
+    stage('cleanup') {
       steps {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
                   openshift.selector("all", [ template : applicationName ]).delete() 
-                  if (openshift.selector("secrets", applicationName).exists()) { 
-                    openshift.selector("secrets", applicationName).delete()
-                  }
                 }
             }
         }
       }
-    }*/
+    }
     stage('create') {
       steps {
         script {
