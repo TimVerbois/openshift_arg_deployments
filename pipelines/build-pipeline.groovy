@@ -1,4 +1,5 @@
 //def templatePath = 'https://raw.githubusercontent.com/openshift/nodejs-ex/master/openshift/templates/nodejs-mongodb.json' 
+def templatePath = "templates/build.yaml"
 //def applicationName = 'nodejs-mongodb-example' 
 def applicationName = "helloworld"
 pipeline {
@@ -36,32 +37,28 @@ pipeline {
         }
       }
     }*/
-/*    stage('create') {
+    stage('create') {
       steps {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
-                  openshift.newApp(templatePath) 
+                  openshift.create(templatePath) 
                 }
             }
         }
       }
-    }*/
+    }
     stage('build') {
       steps {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
                   def builds = openshift.selector("bc", applicationName).related('builds')
-                  builds.each {
-//                    it.startBuild()
-                    echo message: "bla"
-                  }
-/*                  timeout(5) {
+                  timeout(5) {
                     builds.untilEach(1) {
                       return (it.object().status.phase == "Complete")
                     }
-                  }*/
+                  }
                 }
             }
         }

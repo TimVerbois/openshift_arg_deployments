@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    application: ${APPLICATION_NAME}
+  name: ${APPLICATION_NAME}
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: ${APPLICATION_NAME}:latest
+  source:
+    git:
+      ref: ${SOURCE_REF}
+      uri: ${SOURCE_URL}
+    type: Git
+    sourceSecret:
+      name: github
+  strategy:
+    sourceStrategy:
+      forcePull: true
+      from:
+        kind: ImageStreamTag
+        name: eap71-openshift:latest
+        namespace: timv-dev
+    type: Source
+  triggers:
+  - imageChange: {}
+    type: ImageChange
+  - type: ConfigChange
