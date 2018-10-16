@@ -66,6 +66,8 @@ pipeline {
         script {
           openshift.withCluster() {
             openshift.withProject() {
+              def describe = openshift.describe("is", applicationName)
+              echo message: describe
               openshift.tag("${applicationName}:latest", "${applicationName}:1.4") 
             }
           }
