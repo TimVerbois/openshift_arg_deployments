@@ -61,32 +61,32 @@ pipeline {
         }
       }
     }
-    stage('deploy') {
-      steps {
-        script {
-            openshift.withCluster() {
-                openshift.withProject() {
-                  def rm = openshift.selector("dc", applicationName).rollout()
-                  timeout(5) { 
-                    openshift.selector("dc", applicationName).related('pods').untilEach(1) {
-                      return (it.object().status.phase == "Running")
-                    }
-                  }
-                }
-            }
-        }
-      }
-    }
     stage('tag') {
       steps {
         script {
-            openshift.withCluster() {
-                openshift.withProject() {
-                  openshift.tag("${applicationName}:latest", "${applicationName}-staging:latest") 
-                }
+          openshift.withCluster() {
+            openshift.withProject() {
+              openshift.tag("${applicationName}:latest", "${applicationName}:1.4") 
             }
+          }
         }
       }
     }
+/*    stage('deploy') {
+      steps {
+        script {
+          openshift.withCluster() {
+            openshift.withProject() {
+              def rm = openshift.selector("dc", applicationName).rollout()
+              timeout(5) { 
+                openshift.selector("dc", applicationName).related('pods').untilEach(1) {
+                  return (it.object().status.phase == "Running")
+                }
+              }
+            }
+          }
+        }
+      }
+    }*/
   }
 }
