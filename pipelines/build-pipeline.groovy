@@ -61,20 +61,7 @@ pipeline {
         }
       }
     }
-    stage('tag') {
-      steps {
-        script {
-          openshift.withCluster() {
-            openshift.withProject() {
-              def describe = openshift.describe("is", applicationName)
-              echo message: describe
-              openshift.tag("${applicationName}:latest", "${applicationName}:1.4") 
-            }
-          }
-        }
-      }
-    }
-/*    stage('deploy') {
+    stage('deploy') {
       steps {
         script {
           openshift.withCluster() {
@@ -89,6 +76,19 @@ pipeline {
           }
         }
       }
-    }*/
+    }
+    stage('tag') {
+      steps {
+        script {
+          openshift.withCluster() {
+            openshift.withProject() {
+              def imagestream = openshift.selector("is", applicationName)
+              echo message: imagestream.describe()
+              openshift.tag("${applicationName}:latest", "${applicationName}:1.4") 
+            }
+          }
+        }
+      }
+    }
   }
 }
