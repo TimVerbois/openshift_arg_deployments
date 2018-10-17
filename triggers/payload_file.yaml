@@ -1,0 +1,7 @@
+env: 
+   - name: "war"
+     value: "helloworld.war"
+   - name: "version"
+     value: "1.5"
+
+

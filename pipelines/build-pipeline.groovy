@@ -2,6 +2,7 @@
 def templatePath = "templates/build.yaml"
 //def applicationName = 'nodejs-mongodb-example' 
 def applicationName = "helloworld"
+def version = env.version
 pipeline {
   agent {
     node {
@@ -84,7 +85,7 @@ pipeline {
             openshift.withProject() {
               def imagestream = openshift.selector("is", applicationName)
               imagestream.describe()
-              openshift.tag("${applicationName}:latest", "${applicationName}:1.4") 
+              openshift.tag("${applicationName}:latest", "${applicationName}:${version}") 
             }
           }
         }
