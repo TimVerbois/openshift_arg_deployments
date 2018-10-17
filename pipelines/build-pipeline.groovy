@@ -83,7 +83,7 @@ pipeline {
           openshift.withCluster() {
             openshift.withProject() {
               def imagestream = openshift.selector("is", applicationName)
-              echo message: imagestream.describe()
+              imagestream.describe()
               openshift.tag("${applicationName}:latest", "${applicationName}:1.4") 
             }
           }
