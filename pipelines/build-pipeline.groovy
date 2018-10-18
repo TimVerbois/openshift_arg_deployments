@@ -51,7 +51,8 @@ pipeline {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
-                  openshift.create(readFile(buildTemplate))
+                  def buildConfig = readFile(buildTemplate).replaceAll("..VERSION.", "latest").replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
+                  openshift.create(buildConfig)
                   def builds = openshift.selector("bc", applicationName).related('builds')
                   timeout(5) {
                     builds.untilEach(1) {
