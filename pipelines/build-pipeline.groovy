@@ -54,7 +54,7 @@ pipeline {
         script {
           openshift.withCluster() {
             openshift.withProject() {
-              def deploymentConfig = readFile(deploymentTemplate).replaceAll('${VERSION}', "latest").replaceAll('${APPLICATION_NAME}', applicationName)
+              def deploymentConfig = readFile(deploymentTemplate).replaceAll('\${VERSION}', "latest").replaceAll('\${APPLICATION_NAME}', applicationName)
               openshift.create(deploymentConfig)
                def rm = openshift.selector("dc", applicationName).rollout()
               timeout(5) { 
@@ -86,7 +86,7 @@ pipeline {
           openshift.withCluster() {
             openshift.withProject() {
               openshift.selector("dc", applicationName).delete()
-              def deploymentConfig = readFile(deploymentTemplate).replaceAll('${VERSION}', version).replaceAll('${APPLICATION_NAME}', applicationName)
+              def deploymentConfig = readFile(deploymentTemplate).replaceAll('\${VERSION}', version).replaceAll('\${APPLICATION_NAME}', applicationName)
               openshift.create(deploymentConfig)
               def rm = openshift.selector("dc", applicationName).rollout()
               timeout(5) { 
