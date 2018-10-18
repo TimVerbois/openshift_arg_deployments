@@ -32,11 +32,6 @@ objects:
           namespace: ci00000000-argentatest-01
       type: Source
     triggers:
-    - generic:
-        secretReference:
-          name: webhook
-        allowEnv: true
-      type: Generic
     - imageChange: {}
       type: ImageChange
     - type: ConfigChange
@@ -63,7 +58,12 @@ objects:
       type: Git
       sourceSecret:
         name: github
-        triggers:
+    triggers:
+    - generic:
+        secretReference:
+          name: webhook
+        allowEnv: true
+      type: Generic
 - apiVersion: v1
   kind: ImageStream
   metadata:

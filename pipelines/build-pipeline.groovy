@@ -1,6 +1,14 @@
-def templatePath = "templates/build.yaml"
+def buildTemplate = "templates/build.yaml"
+def serviceTemplate = "templates/service.yaml"
+def deploymentTemplate = "templates/deployment.yaml"
+
 def applicationName = "helloworld"
 def version = env.version
+if ( version == "" ) {
+    echo message: "WARNING: no version has been provided, reverting to version latest"
+    version = "latest"
+}
+
 pipeline {
   agent {
     node {
@@ -11,44 +19,25 @@ pipeline {
     timeout(time: 20, unit: 'MINUTES') 
   }
   stages {
-    stage('preamble') {
-        steps {
-            script {
-                openshift.withCluster() {
-                    openshift.withProject() {
-                        echo "Using project: ${openshift.project()}"
-                    }
-                }
-            }
-        }
-    }
     stage('cleanup') {
       steps {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
                   openshift.selector("bc", applicationName).delete()
+                  openshift.selector("dc", applicationName).delete()
+                  openshift.selector("service", applicationName).delete()
                 }
             }
         }
       }
-    }
-    stage('create') {
-      steps {
-        script {
-            openshift.withCluster() {
-                openshift.withProject() {
-                  openshift.create("-f " + templatePath) 
-                }
-            }
-        }
-      }
-    }
+   }
     stage('build') {
       steps {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
+                  openshift.create(readFile(buildTemplate))
                   def builds = openshift.selector("bc", applicationName).related('builds')
                   timeout(5) {
                     builds.untilEach(1) {
@@ -60,12 +49,14 @@ pipeline {
         }
       }
     }
-    stage('deploy') {
+    stage('test') {
       steps {
         script {
           openshift.withCluster() {
             openshift.withProject() {
-              def rm = openshift.selector("dc", applicationName).rollout()
+              def deploymentConfig = readFile(deploymentTemplate).replaceAll('${VERSION}', "latest").replaceAll('${APPLICATION_NAME}', applicationName)
+              openshift.create(deploymentConfig)
+               def rm = openshift.selector("dc", applicationName).rollout()
               timeout(5) { 
                 openshift.selector("dc", applicationName).related('pods').untilEach(1) {
                   return (it.object().status.phase == "Running")
@@ -89,5 +80,35 @@ pipeline {
         }
       }
     }
-  }
+    stage('redeploy') {
+      steps {
+        script {
+          openshift.withCluster() {
+            openshift.withProject() {
+              openshift.selector("dc", applicationName).delete()
+              def deploymentConfig = readFile(deploymentTemplate).replaceAll('${VERSION}', version).replaceAll('${APPLICATION_NAME}', applicationName)
+              openshift.create(deploymentConfig)
+              def rm = openshift.selector("dc", applicationName).rollout()
+              timeout(5) { 
+                openshift.selector("dc", applicationName).related('pods').untilEach(1) {
+                  return (it.object().status.phase == "Running")
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+     stage('expose') {
+      steps {
+        script {
+            openshift.withCluster() {
+                openshift.withProject() {
+                  openshift.create(readFile(serviceTemplate))
+                }
+            }
+        }
+      }
+    }
+   }
 }
