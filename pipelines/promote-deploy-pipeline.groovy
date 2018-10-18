@@ -55,7 +55,8 @@ pipeline {
         script {
           openshift.withCluster() {
             openshift.withProject() {
-              def configMap = readFile(configMapTemplate).replaceAll("..VERSION.", version).replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
+              def configMap = readFile(configMapTemplate)
+//              def configMap = readFile(configMapTemplate).replaceAll("..VERSION.", version).replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
               echo message: configMap
               openshift.create(configMap)
             }
