@@ -10,7 +10,7 @@ def from_project = env.FROM_PROJECT
 def version = env.version
 def applicationCn = env.APPLICATION_CN
 
-if ( version == "" ) {
+if ( ! version ) {
     echo message: "WARNING: no version has been provided, reverting to version latest"
     version = "latest"
 }
