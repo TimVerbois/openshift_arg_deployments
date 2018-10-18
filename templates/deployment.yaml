@@ -5,7 +5,7 @@ metadata:
     app: jboss-as-a-service
     application: ${APPLICATION_NAME}
   name: ${APPLICATION_NAME}
-  namespace: ci00000000-argentatest-01
+  namespace: ${NAMESPACE}
 spec:
   replicas: 1
   selector:
@@ -53,6 +53,6 @@ spec:
         from:
           kind: ImageStreamTag
           name: '${APPLICATION_NAME}:latest'
-          namespace: ci00000000-argentatest-01
+          namespace: ${NAMESPACE}
       type: ImageChange
     - type: ConfigChange

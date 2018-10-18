@@ -22,7 +22,7 @@ spec:
       from:
         kind: ImageStreamTag
         name: eap71-openshift:latest
-        namespace: ci00000000-argentatest-01
+        namespace: ${NAMESPACE}
     type: Source
   triggers:
   - imageChange: {}

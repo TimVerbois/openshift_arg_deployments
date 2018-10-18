@@ -2,11 +2,11 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   labels:
-    application: helloworld
-  name: helloworld
-  namespace: ci00000000-argentatest-01
+    application: ${APPLICATION_NAME}
+  name: ${APPLICATION_NAME}
+  namespace: ${NAMESPACE}
 spec:
-  host: helloworld-ci00000000-argentatest-01.apps.openshift.cegeka.com
+  host: ${APPLICATION_NAME}-ci00000000-argentatest-01.apps.openshift.cegeka.com
   to:
     kind: Service
     name: ${APPLICATION_NAME}
@@ -14,7 +14,7 @@ spec:
   wildcardPolicy: None
 status:
   ingress:
-    - host: helloworld-ci00000000-argentatest-01.apps.openshift.cegeka.com
+    - host: ${APPLICATION_NAME}-ci00000000-argentatest-01.apps.openshift.cegeka.com
       routerName: router
       wildcardPolicy: None
 
