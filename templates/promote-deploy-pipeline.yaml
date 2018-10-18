@@ -18,6 +18,8 @@ objects:
         env:
           - name: "APPLICATION_NAME"
             value: ${APPLICATION_NAME}
+          - name: "FROM_PROJECT"
+            value: ${FROM_PROJECT}
       type: JenkinsPipeline
     source:
       git:
@@ -44,6 +46,10 @@ parameters:
 - description: branch
   name: SOURCE_REF
   value: master
+- description: From project for the promote
+  name: FROM_PROJECT
+  required: true
+  value: ci00000000-argentatest-01
 - description: CN name of the application
   name: APPLICATION_CN
   value:

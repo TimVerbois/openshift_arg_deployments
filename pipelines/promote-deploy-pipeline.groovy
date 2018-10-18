@@ -4,8 +4,11 @@ def deploymentTemplate = "templates/deployment.yaml"
 def routeTemplate = "templates/route.yaml"
 def configMapTemplate = "templates/configmap.yaml"
 
-def applicationName = "helloworld2"
+def applicationName = env.APPLICATION_NAME
+def from_project = env.FROM_PROJECT
 def version = env.version
+def applicationCn = env.APPLICATION_CN
+
 if ( version == "" ) {
     echo message: "WARNING: no version has been provided, reverting to version latest"
     version = "latest"
@@ -20,7 +23,7 @@ pipeline {
   options {
     timeout(time: 20, unit: 'MINUTES') 
   }
-  stages {
+/*  stages {
     stage('cleanup') {
       steps {
         script {
@@ -45,25 +48,7 @@ pipeline {
             }
         }
       }
-   }
-    stage('build') {
-      steps {
-        script {
-            openshift.withCluster() {
-                openshift.withProject() {
-                  def buildConfig = readFile(buildTemplate).replaceAll("..VERSION.", "latest").replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
-                  openshift.create(buildConfig)
-                  def builds = openshift.selector("bc", applicationName).related('builds')
-                  timeout(5) {
-                    builds.untilEach(1) {
-                      return (it.object().status.phase == "Complete")
-                    }
-                  }
-                }
-            }
-        }
-      }
-    }
+   }*/
     stage('CreateConfig') {
       steps {
         script {
@@ -76,46 +61,32 @@ pipeline {
         }
       }
     }
-     stage('test') {
-      steps {
-        script {
-          openshift.withCluster() {
-            openshift.withProject() {
-              def deploymentConfig = readFile(deploymentTemplate).replaceAll("..VERSION.", "latest").replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
-              openshift.create(deploymentConfig)
-               def rm = openshift.selector("dc", applicationName).rollout()
-              timeout(5) { 
-                openshift.selector("dc", applicationName).related('pods').untilEach(1) {
-                  return (it.object().status.phase == "Running")
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    stage('tag') {
-      steps {
-        script {
-          openshift.withCluster() {
-            openshift.withProject() {
-              def imagestream = openshift.selector("is", applicationName)
-              openshift.tag("${applicationName}:latest", "${applicationName}:${version}") 
-            }
-          }
-        }
-      }
-    }
-   stage('deploy') {
-      steps {
-        script {
-          openshift.withCluster() {
-            openshift.withProject() {
-              if ( openshift.selector("dc", applicationName).exists() ) {
-                openshift.selector("dc", applicationName).delete()
-              }
+   stage('promote') {
+     steps {
+       script {
+         openshift.withCluster() {
+           openshift.withProject() {
+             withDockerRegistry([url: "docker-registry.default.svc:5000/ci00000000-argentatest-01"]) {
+               withDockerRegistry([url: "docker-registry.default.svc:5000/ci00000000-argentatest-02"]) {
+                 sh """
+                    oc image mirror docker-registry.default.svc:5000/ci00000000-argentatest-01/helloworld2:${version} docker-registry.default.svc:5000/ci00000000-argentatest-02/helloworld2:${version}
+                 """
+               }
+             }
+           }
+         }
+       }
+     }
+   }
+   stage('deployment') {
+     steps {
+       script {
+         openshift.withCluster() {
+           openshift.withProject() {
               def deploymentConfig = readFile(deploymentTemplate).replaceAll("..VERSION.", version).replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
-              openshift.create(deploymentConfig)
+              if ( openshift.selector("dc", applicationName).exists() ) {
+                openshift.apply(deploymentConfig)
+              }
               def rm = openshift.selector("dc", applicationName).rollout()
               timeout(5) { 
                 openshift.selector("dc", applicationName).related('pods').untilEach(1) {
@@ -127,19 +98,29 @@ pipeline {
         }
       }
     }
-     stage('expose') {
+    stage('expose') {
       steps {
         script {
-            openshift.withCluster() {
-                openshift.withProject() {
-                  def serviceConfig = readFile(serviceTemplate).replaceAll("..VERSION.", "latest").replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
-                  openshift.create(serviceConfig)
-                  def routeConfig = readFile(routeTemplate).replaceAll("..VERSION.", "latest").replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
-                  openshift.create(routeConfig)
-                }
+          openshift.withCluster() {
+            openshift.withProject() {
+              def serviceConfig = readFile(serviceTemplate).replaceAll("..VERSION.", "latest").replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
+              if ( openshift.selector("service", applicationName).exists()) {
+                openshift.apply(serviceConfig)
+              }
+              else {
+                openshift.create(serviceConfig)
+              }
+              def routeConfig = readFile(routeTemplate).replaceAll("..VERSION.", "latest").replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())replaceAll("..APPLICATION_CN.", applicationCn)
+              if ( openshift.selector("rc", applicationName).exists()) {
+                openshift.apply(routeConfig)
+              }
+              else {
+                openshift.create(routeConfig)
+              }
             }
+          }
         }
       }
     }
-   }
+  }
 }
