@@ -91,7 +91,9 @@ pipeline {
         script {
           openshift.withCluster() {
             openshift.withProject() {
-              openshift.selector("dc", applicationName).delete()
+              if ( openshift.selector("dc", applicationName).exists() ) {
+                openshift.selector("dc", applicationName).delete()
+              }
               def deploymentConfig = readFile(deploymentTemplate).replaceAll('\${VERSION}', version).replaceAll('\${APPLICATION_NAME}', applicationName)
               openshift.create(deploymentConfig)
               def rm = openshift.selector("dc", applicationName).rollout()
