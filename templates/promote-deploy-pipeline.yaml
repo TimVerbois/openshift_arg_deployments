@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: promote-deploy-pipeline
+metadata:
+  name: promote-deploy-pipeline
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      application: "${APPLICATION_NAME}"
+    name: "${APPLICATION_NAME}-pl"
+  spec:
+    strategy:
+      jenkinsPipelineStrategy:
+        jenkinsfilePath: pipelines/promote-deploy-pipeline.groovy
+        env:
+          - name: "APPLICATION_NAME"
+            value: ${APPLICATION_NAME}
+      type: JenkinsPipeline
+    source:
+      git:
+        ref: ${SOURCE_REF}
+        uri: ${SOURCE_URL}
+      type: Git
+      sourceSecret:
+        name: github
+    triggers:
+    - generic:
+        secretReference:
+          name: webhook
+        allowEnv: true
+      type: Generic
+parameters:
+- description: ApplicationName
+  name: APPLICATION_NAME
+  required: true
+  value: helloworld2
+- description: Git
+  name: SOURCE_URL
+  required: true
+  value: git@github.com:TimVerbois/openshift_arg_deployments.git
+- description: branch
+  name: SOURCE_REF
+  value: master
+- description: CN name of the application
+  name: APPLICATION_CN
+  value:
