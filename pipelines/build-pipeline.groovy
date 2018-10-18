@@ -1,6 +1,7 @@
 def buildTemplate = "templates/build.yaml"
 def serviceTemplate = "templates/service.yaml"
 def deploymentTemplate = "templates/deployment.yaml"
+def routeTemplate = "templates/route.yaml"
 
 def applicationName = "helloworld"
 def version = env.version
@@ -114,6 +115,8 @@ pipeline {
                 openshift.withProject() {
                   def serviceConfig = readFile(serviceTemplate).replaceAll("..VERSION.", "latest").replaceAll("..APPLICATION_NAME.", applicationName)
                   openshift.create(serviceConfig)
+                  def routeConfig = readFile(routeTemplate).replaceAll("..VERSION.", "latest").replaceAll("..APPLICATION_NAME.", applicationName)
+                  openshift.create(routeConfig)
                 }
             }
         }
