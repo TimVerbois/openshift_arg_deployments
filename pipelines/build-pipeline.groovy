@@ -34,6 +34,9 @@ pipeline {
                   if ( openshift.selector("service", applicationName).exists() ) {
                     openshift.selector("service", applicationName).delete()
                   }
+                  if ( openshift.selector("route", applicationName).exists() ) {
+                    openshift.selector("route", applicationName).delete()
+                  }
                 }
             }
         }
