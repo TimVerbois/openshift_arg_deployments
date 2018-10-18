@@ -94,6 +94,18 @@ pipeline {
         }
       }
     }
+    stage('CreateConfig') {
+      steps {
+        script {
+          openshift.withCluster() {
+            openshift.withProject() {
+              def configMap = readFile(configMapTemplate).replaceAll("..VERSION.", version).replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
+              openshift.create(configMap)
+            }
+          }
+        }
+      }
+    }
     stage('deploy') {
       steps {
         script {
@@ -102,8 +114,6 @@ pipeline {
               if ( openshift.selector("dc", applicationName).exists() ) {
                 openshift.selector("dc", applicationName).delete()
               }
-              def configMap = readFile(configMapTemplate).replaceAll("..VERSION.", version).replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
-              openshift.create(configMap)
               def deploymentConfig = readFile(deploymentTemplate).replaceAll("..VERSION.", version).replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
               openshift.create(deploymentConfig)
               def rm = openshift.selector("dc", applicationName).rollout()
