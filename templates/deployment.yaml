@@ -1,7 +1,8 @@
-apiVersion: v1
+apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
   labels:
+    app: jboss-as-a-service
     application: ${APPLICATION_NAME}
   name: ${APPLICATION_NAME}
   namespace: ci00000000-argentatest-01
@@ -10,6 +11,7 @@ spec:
   selector:
     deploymentConfig: ${APPLICATION_NAME}
   strategy:
+    activeDeadlineSeconds: 21600
     resources: {}
     rollingParams:
       intervalSeconds: 1
@@ -18,23 +20,39 @@ spec:
       timeoutSeconds: 600
       updatePeriodSeconds: 1
     type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        application: ${APPLICATION_NAME}
+        deploymentConfig: ${APPLICATION_NAME}
+      name: ${APPLICATION_NAME}
     spec:
       containers:
-      - image: ${APPLICATION_NAME}:${VERSION}
-        imagePullPolicy: Always
-        name: ${APPLICATION_NAME}
-        ports:
-        - containerPort: 8080
-          name: http
-          protocol: TCP
+        - image: ${APPLICATION_NAME}:${VERSION}
+          imagePullPolicy: Always
+          name: ${APPLICATION_NAME}
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
       terminationGracePeriodSeconds: 60
+  test: false
   triggers:
-  - imageChangeParams:
-      automatic: true
-      containerNames:
-      - ${APPLICATION_NAME}
-      from:
-        kind: ImageStream
-        name: ${APPLICATION_NAME}
-    type: ImageChange
-  - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - ${APPLICATION_NAME}
+        from:
+          kind: ImageStreamTag
+          name: '${APPLICATION_NAME}:latest'
+          namespace: ci00000000-argentatest-01
+      type: ImageChange
+    - type: ConfigChange
