@@ -112,7 +112,8 @@ pipeline {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
-                  openshift.create(readFile(serviceTemplate))
+                  def serviceConfig = readFile(serviceTemplate).replaceAll("..VERSION.", "latest").replaceAll("..APPLICATION_NAME.", applicationName)
+                  openshift.create(serviceConfig)
                 }
             }
         }
