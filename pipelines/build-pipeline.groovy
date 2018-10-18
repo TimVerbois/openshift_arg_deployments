@@ -64,7 +64,19 @@ pipeline {
         }
       }
     }
-    stage('test') {
+    stage('CreateConfig') {
+      steps {
+        script {
+          openshift.withCluster() {
+            openshift.withProject() {
+              def configMap = readFile(configMapTemplate).replaceAll("..VERSION.", version).replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
+              openshift.create(configMap)
+            }
+          }
+        }
+      }
+    }
+     stage('test') {
       steps {
         script {
           openshift.withCluster() {
@@ -94,19 +106,7 @@ pipeline {
         }
       }
     }
-    stage('CreateConfig') {
-      steps {
-        script {
-          openshift.withCluster() {
-            openshift.withProject() {
-              def configMap = readFile(configMapTemplate).replaceAll("..VERSION.", version).replaceAll("..APPLICATION_NAME.", applicationName).replaceAll("..NAMESPACE.", openshift.project())
-              openshift.create(configMap)
-            }
-          }
-        }
-      }
-    }
-    stage('deploy') {
+   stage('deploy') {
       steps {
         script {
           openshift.withCluster() {
