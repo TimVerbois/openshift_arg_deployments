@@ -23,8 +23,8 @@ pipeline {
   options {
     timeout(time: 20, unit: 'MINUTES') 
   }
-/*  stages {
-    stage('cleanup') {
+  stages {
+/*    stage('cleanup') {
       steps {
         script {
             openshift.withCluster() {
@@ -49,7 +49,7 @@ pipeline {
         }
       }
    }*/
-    stage('CreateConfig') {
+   stage('CreateConfig') {
       steps {
         script {
           openshift.withCluster() {
