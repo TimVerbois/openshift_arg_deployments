@@ -4,7 +4,8 @@ def deploymentTemplate = "templates/deployment.yaml"
 def routeTemplate = "templates/route.yaml"
 def configMapTemplate = "templates/configmap.yaml"
 
-def applicationName = env.APPLICATION_NAME
+//def applicationName = env.APPLICATION_NAME
+def applicationName = "helloworld2"
 def from_project = env.FROM_PROJECT
 def version = env.version
 def applicationCn = env.APPLICATION_CN
