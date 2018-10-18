@@ -26,7 +26,7 @@ spec:
       name: ${APPLICATION_NAME}
     spec:
       containers:
-        image: ${APPLICATION_NAME}:${VERSION}
+      - image: ${APPLICATION_NAME}:${VERSION}
         imagePullPolicy: Always
         name: ${APPLICATION_NAME}
         ports:
