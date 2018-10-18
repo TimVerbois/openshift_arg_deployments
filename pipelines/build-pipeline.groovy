@@ -4,7 +4,7 @@ def deploymentTemplate = "templates/deployment.yaml"
 def routeTemplate = "templates/route.yaml"
 def configMapTemplate = "templates/configmap.yaml"
 
-def applicationName = "helloworld"
+def applicationName = "helloworld2"
 def version = env.version
 if ( version == "" ) {
     echo message: "WARNING: no version has been provided, reverting to version latest"
