@@ -1,6 +1,4 @@
-//def templatePath = 'https://raw.githubusercontent.com/openshift/nodejs-ex/master/openshift/templates/nodejs-mongodb.json' 
 def templatePath = "templates/build.yaml"
-//def applicationName = 'nodejs-mongodb-example' 
 def applicationName = "helloworld"
 def version = env.version
 pipeline {

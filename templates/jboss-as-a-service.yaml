@@ -53,6 +53,8 @@ objects:
         env:
           - name: "APPLICATION_NAME"
             value: ${APPLICATION_NAME}
+          - name: "version"
+            value: "latest"
       type: JenkinsPipeline
     source:
       git:
