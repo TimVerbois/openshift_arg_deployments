@@ -29,7 +29,13 @@ spec:
       name: ${APPLICATION_NAME}
     spec:
       containers:
-        - image: ${APPLICATION_NAME}:${VERSION}
+        - env:
+          - name: DATABASE
+            valueFrom:
+              configMapKeyRef:
+                key: datastore.database
+                name: ${APPLICATION_NAME}
+          image: ${APPLICATION_NAME}:${VERSION}
           imagePullPolicy: Always
           name: ${APPLICATION_NAME}
           ports:
