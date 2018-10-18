@@ -24,9 +24,15 @@ pipeline {
         script {
             openshift.withCluster() {
                 openshift.withProject() {
-                  openshift.selector("bc", applicationName).delete()
-                  openshift.selector("dc", applicationName).delete()
-                  openshift.selector("service", applicationName).delete()
+                  if ( openshift.selector("bc", applicationName) ) {
+                    openshift.selector("bc", applicationName).delete()
+                  }
+                  if ( openshift.selector("dc", applicationName) ) {
+                    openshift.selector("dc", applicationName).delete()
+                  }
+                  if ( openshift.selector("service", applicationName) ) {
+                    openshift.selector("service", applicationName).delete()
+                  }
                 }
             }
         }
