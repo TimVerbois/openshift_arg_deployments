@@ -60,7 +60,7 @@ pipeline {
         script {
           openshift.withCluster() {
             openshift.withProject() {
-              def deploymentConfig = readFile(deploymentTemplate).replaceAll('.{VERSION}', "latest").replaceAll('.{APPLICATION_NAME}', applicationName)
+              def deploymentConfig = readFile(deploymentTemplate).replaceAll("..VERSION.", "latest").replaceAll("..APPLICATION_NAME.", applicationName)
               openshift.create(deploymentConfig)
                def rm = openshift.selector("dc", applicationName).rollout()
               timeout(5) { 
