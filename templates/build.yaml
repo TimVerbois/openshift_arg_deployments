@@ -12,10 +12,10 @@ spec:
   source:
     git:
       ref: "master"
-      uri: "git@github.com:TimVerbois/openshift_arg_deployments.git"
+      uri: "git@212.113.90.91:openshift/ARG_testDeploymentFlows.git"
     type: Git
     sourceSecret:
-      name: github
+      name: gitlab
   strategy:
     sourceStrategy:
       forcePull: true

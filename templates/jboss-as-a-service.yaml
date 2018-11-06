@@ -22,14 +22,14 @@ objects:
         uri: ${SOURCE_URL}
       type: Git
       sourceSecret:
-        name: github
+        name: gitlab
     strategy:
       sourceStrategy:
         forcePull: true
         from:
           kind: ImageStreamTag
           name: eap71-openshift:latest
-          namespace: ci00000000-argentatest-01
+          namespace: mcp-dvx
       type: Source
     triggers:
     - imageChange: {}
@@ -57,7 +57,7 @@ objects:
         uri: ${SOURCE_URL}
       type: Git
       sourceSecret:
-        name: github
+        name: gitlab
     triggers:
     - generic:
         secretReference:
@@ -90,7 +90,7 @@ objects:
     labels:
       application: ${APPLICATION_NAME}
     name: ${APPLICATION_NAME}
-    namespace: ci00000000-argentatest-01
+    namespace: mcp-dvx
   spec:
     replicas: 1
     selector:
@@ -154,7 +154,7 @@ parameters:
 - description: Git 
   name: SOURCE_URL
   required: true
-  value: git@github.com:TimVerbois/openshift_arg_deployments.git
+  value: git@212.113.90.91:openshift/ARG_testDeploymentFlows.git
 - description: branch
   name: SOURCE_REF
   value: master

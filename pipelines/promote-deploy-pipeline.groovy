@@ -72,8 +72,8 @@ pipeline {
        script {
          openshift.withCluster() {
            openshift.withProject() {
-             withDockerRegistry([url: "docker-registry.default.svc:5000/ci00000000-argentatest-01", credentialsId: "cgk-puller", ]) {
-               withDockerRegistry([url: "docker-registry.default.svc:5000/ci00000000-argentatest-02"], credentialsId: "jenkins") {
+             withDockerRegistry([url: "docker-registry.default.svc:5000/ci00000000-argentatest-01"]) {
+               withDockerRegistry([url: "docker-registry.default.svc:5000/ci00000000-argentatest-02"] ) {
                  sh """
                     oc image mirror docker-registry.default.svc:5000/ci00000000-argentatest-01/helloworld2:${version} docker-registry.default.svc:5000/ci00000000-argentatest-02/helloworld2:${version} --insecure=true
                  """

@@ -55,7 +55,7 @@ objects:
         uri: ${SOURCE_URL}
       type: Git
       sourceSecret:
-        name: github
+        name: gitlab
     strategy:
       sourceStrategy:
         forcePull: true
@@ -137,7 +137,7 @@ parameters:
 - description: Git 
   name: SOURCE_URL
   required: true
-  value: git@github.com:TimVerbois/openshift_arg_deployments.git
+  value: git@212.113.90.91:openshift/ARG_testDeploymentFlows.git
 - description: branch
   name: SOURCE_REF
   value: master
